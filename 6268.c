@@ -6,7 +6,7 @@
 #include <limits.h>
 #include <unistd.h>
 
-const int N = 8, B = 5;
+const int N = 8, B = 2;
 
 typedef struct Node {
     int data;
@@ -66,10 +66,10 @@ void *counter() {
     pthread_t threadId = pthread_self();
     while (1) {
         sleep(5 + rand() % 5);
-        printf("Counter thread %d: received a message\n", threadId);
-        printf("Counter thread %d: waiting to write\n", threadId);
+        printf("Counter thread %ld: received a message\n", threadId);
+        printf("Counter thread %ld: waiting to write\n", threadId);
         sem_wait(&counterSem);
-        printf("Counter thread %d: now adding to counter,counter value=%d\n", threadId, ++mCounter);
+        printf("Counter thread %ld: now adding to counter,counter value=%d\n", threadId, ++mCounter);
         sem_post(&counterSem);
     }
 
@@ -83,7 +83,7 @@ void *monitor() {
         sleep(8 + rand() % 9);
         printf("Monitor thread: waiting to read counter\n");
         sem_wait(&counterSem);
-        printf(" Monitor thread: reading a count value of %d\n", mCounter);
+        printf("Monitor thread: reading a count value of %d\n", mCounter);
         temp = mCounter;      // to save old counter value before resetting it for enqueue
         mCounter = 0;
         sem_post(&counterSem);
